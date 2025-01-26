@@ -1,0 +1,60 @@
+!pip install scipy
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import correlate, sawtooth
+
+# Plot Triangle Signal
+def plot_triangle_signal(periods=3, samples_per_period=100):
+    t = np.linspace(0, periods, periods * samples_per_period, endpoint=False)
+    triangle_signal = sawtooth(2 * np.pi * t, width=0.5)
+    plt.figure(figsize=(10, 4))
+    plt.plot(t, triangle_signal, label="Triangle Signal")
+    plt.title(f"Triangle Signal ({periods} periods)")
+    plt.xlabel("Time")
+    plt.ylabel("Amplitude")
+    plt.grid()
+    plt.legend()
+    plt.show()
+    return triangle_signal, t
+
+# Plot Cross-Correlation
+def plot_correlation(signal1, signal2):
+    correlation = correlate(signal1, signal2, mode='full')
+    lags = np.arange(-len(signal2) + 1, len(signal1))
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(lags, correlation, label="Cross-Correlation")
+    plt.title("Cross-Correlation Between Signals")
+    plt.xlabel("Lags")
+    plt.ylabel("Correlation")
+    plt.grid()
+    plt.legend()
+    plt.show()
+    return correlation, lags
+
+
+# Plot Signal Segment
+def plot_signal_segment(full_signal, segment, t, segment_length):
+    plt.figure(figsize=(10, 4))
+    plt.plot(t[:segment_length], segment, label="Signal Segment", color='orange')
+    plt.title("Segment of the Triangle Signal")
+    plt.xlabel("Time")
+    plt.ylabel("Amplitude")
+    plt.grid()
+    plt.legend()
+    plt.show()
+
+# Generate and plot triangle signal
+triangle_signal, t = plot_triangle_signal()
+
+# Define segment length (take part of the signal)
+segment_length = len(triangle_signal) // 3  # Example: first third of the signal
+signal_segment = triangle_signal[:segment_length]
+
+# Plot signal segment
+plot_signal_segment(triangle_signal, signal_segment, t, segment_length)
+
+# Compute and plot correlation
+correlation, lags = plot_correlation(triangle_signal, signal_segment)
+
