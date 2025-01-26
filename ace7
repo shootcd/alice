@@ -1,0 +1,312 @@
+###Prac 8
+import cv2
+import matplotlib.pyplot as plt
+
+def apply_edge_detection(image_path):
+    # Load the image in grayscale
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print("Error: Unable to load image!")
+        return
+
+    # Apply Sobel edge detection
+    sobel_x = cv2.Sobel(img, cv2.CV_64F, 1, 0, ksize=3)  # Gradient in x-direction
+    sobel_y = cv2.Sobel(img, cv2.CV_64F, 0, 1, ksize=3)  # Gradient in y-direction
+    sobel_combined = cv2.magnitude(sobel_x, sobel_y)     # Magnitude of gradient
+
+    # Convert Sobel results to 8-bit for visualization
+    sobel_x = cv2.convertScaleAbs(sobel_x)
+    sobel_y = cv2.convertScaleAbs(sobel_y)
+    sobel_combined = cv2.convertScaleAbs(sobel_combined)
+
+    # Apply Canny edge detection
+    canny_edges = cv2.Canny(img, threshold1=100, threshold2=200)
+
+    # Plot the results
+    plt.figure(figsize=(12, 8))
+
+    plt.subplot(2, 2, 1)
+    plt.title("Original Image")
+    plt.axis('off')
+    plt.imshow(img, cmap='gray')
+
+    plt.subplot(2, 2, 2)
+    plt.title("Sobel - Gradient X")
+    plt.axis('off')
+    plt.imshow(sobel_x, cmap='gray')
+
+    plt.subplot(2, 2, 3)
+    plt.title("Sobel - Gradient Y")
+    plt.axis('off')
+    plt.imshow(sobel_y, cmap='gray')
+
+    plt.subplot(2, 2, 4)
+    plt.title("Sobel - Combined Magnitude")
+    plt.axis('off')
+    plt.imshow(sobel_combined, cmap='gray')
+
+    plt.figure()
+    plt.title("Canny Edge Detection")
+    plt.axis('off')
+    plt.imshow(canny_edges, cmap='gray')
+
+    plt.tight_layout()
+    plt.show()
+
+# Path to the image
+image_path = 'D:\\MSc\\Sem 1\\NoSql\\flower.jpg'  # Replace with the path to your image
+apply_edge_detection(image_path)
+
+
+
+###prac 9
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def morphological_processing(image_path):
+    # Load the image in grayscale
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print("Error: Unable to load image!")
+        return
+
+    # Define a kernel
+    kernel = np.ones((5, 5), np.uint8)
+
+    # Morphological operations
+    erosion = cv2.erode(img, kernel, iterations=1)
+    dilation = cv2.dilate(img, kernel, iterations=1)
+    opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+    closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+    gradient = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+    tophat = cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
+    blackhat = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
+
+    # Plot the results
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(3, 3, 1)
+    plt.title("Original Image")
+    plt.axis('off')
+    plt.imshow(img, cmap='gray')
+
+    plt.subplot(3, 3, 2)
+    plt.title("Erosion")
+    plt.axis('off')
+    plt.imshow(erosion, cmap='gray')
+
+    plt.subplot(3, 3, 3)
+    plt.title("Dilation")
+    plt.axis('off')
+    plt.imshow(dilation, cmap='gray')
+
+    plt.subplot(3, 3, 4)
+    plt.title("Opening")
+    plt.axis('off')
+    plt.imshow(opening, cmap='gray')
+
+    plt.subplot(3, 3, 5)
+    plt.title("Closing")
+    plt.axis('off')
+    plt.imshow(closing, cmap='gray')
+
+    plt.subplot(3, 3, 6)
+    plt.title("Gradient")
+    plt.axis('off')
+    plt.imshow(gradient, cmap='gray')
+
+    plt.subplot(3, 3, 7)
+    plt.title("Top Hat")
+    plt.axis('off')
+    plt.imshow(tophat, cmap='gray')
+
+    plt.subplot(3, 3, 8)
+    plt.title("Black Hat")
+    plt.axis('off')
+    plt.imshow(blackhat, cmap='gray')
+
+    plt.tight_layout()
+    plt.show()
+
+# Path to the image
+image_path = 'D:\\MSc\\Sem 1\\NoSql\\flower.jpg'  # Replace with the path to your image
+morphological_processing(image_path)
+
+
+
+
+##prac10
+!pip install scikit-image
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.feature import hog
+
+def feature_extraction(image_path):
+    # Load the image
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # 1. Corner Detection (Harris)
+    harris_corners = cv2.cornerHarris(gray, blockSize=2, ksize=3, k=0.04)
+    harris_corners = cv2.dilate(harris_corners, None)  # Enhance corner points
+    img_harris = img.copy()
+    img_harris[harris_corners > 0.01 * harris_corners.max()] = [0, 0, 255]
+
+    # 2. Corner Detection (Shi-Tomasi)
+    corners = cv2.goodFeaturesToTrack(gray, maxCorners=100, qualityLevel=0.01, minDistance=10)
+    corners = np.intp(corners)  # Updated from np.int0 to np.intp
+    img_shi_tomasi = img.copy()
+    for corner in corners:
+        x, y = corner.ravel()
+        cv2.circle(img_shi_tomasi, (x, y), 3, (0, 255, 0), -1)
+
+    # 3. Blob Detection
+    blob_params = cv2.SimpleBlobDetector_Params()
+    blob_detector = cv2.SimpleBlobDetector_create(blob_params)
+    keypoints = blob_detector.detect(gray)
+    img_blob = cv2.drawKeypoints(img, keypoints, None, (0, 0, 255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+    # 4. HoG Features
+    hog_features, hog_image = hog(gray, pixels_per_cell=(8, 8), cells_per_block=(2, 2),
+                                  visualize=True, block_norm='L2-Hys')
+
+    # 5. Haar Features (Face Detection)
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    img_haar = img.copy()
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img_haar, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+    # Plot the results
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(2, 3, 1)
+    plt.title("Original Image")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 2)
+    plt.title("Harris Corners")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_harris, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 3)
+    plt.title("Shi-Tomasi Corners")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_shi_tomasi, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 4)
+    plt.title("Blob Detection")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_blob, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 5)
+    plt.title("HoG Features")
+    plt.axis('off')
+    plt.imshow(hog_image, cmap='gray')
+
+    plt.subplot(2, 3, 6)
+    plt.title("Haar Features (Face Detection)")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_haar, cv2.COLOR_BGR2RGB))
+
+    plt.tight_layout()
+    plt.show()
+
+# Path to the image
+image_path = 'D:\\MSc\\Sem 1\\NoSql\\human.jpg' # Replace with the path to your image
+feature_extraction(image_path)
+
+
+
+
+##prac11
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+def shape_segmentation(image_path):
+    # Load the image in grayscale
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 1)
+
+    # 1. Edge-based Segmentation: Using Canny Edge Detection
+    edges = cv2.Canny(blurred, 50, 150)
+
+    # 2. Line Detection using Hough Transform
+    lines = cv2.HoughLines(edges, 1, np.pi / 180, 100)
+    img_lines = img.copy()
+    if lines is not None:
+        for rho, theta in lines[:, 0]:
+            a = np.cos(theta)
+            b = np.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * (a))
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * (a))
+            cv2.line(img_lines, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+    # 3. Circle Detection using Hough Transform
+    circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
+                               param1=50, param2=30, minRadius=10, maxRadius=100)
+    img_circles = img.copy()
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        for (x, y, r) in circles[0, :]:
+            cv2.circle(img_circles, (x, y), r, (0, 255, 255), 3)
+            cv2.circle(img_circles, (x, y), 2, (255, 0, 0), 3)
+
+    # 4. Region-based Segmentation: Watershed Algorithm
+    _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    kernel = np.ones((3, 3), np.uint8)
+    sure_bg = cv2.dilate(binary, kernel, iterations=2)
+    dist_transform = cv2.distanceTransform(binary, cv2.DIST_L2, 5)
+    _, sure_fg = cv2.threshold(dist_transform, 0.7 * dist_transform.max(), 255, 0)
+    sure_fg = np.uint8(sure_fg)
+    unknown = cv2.subtract(sure_bg, sure_fg)
+    markers = cv2.connectedComponents(sure_fg)[1]
+    markers = markers + 1
+    markers[unknown == 255] = 0
+    watershed_img = img.copy()
+    markers = cv2.watershed(watershed_img, markers)
+    watershed_img[markers == -1] = [255, 0, 0]
+
+    # Plot the results
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(2, 3, 1)
+    plt.title("Original Image")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 2)
+    plt.title("Edge Detection (Canny)")
+    plt.axis('off')
+    plt.imshow(edges, cmap='gray')
+
+    plt.subplot(2, 3, 3)
+    plt.title("Line Detection (Hough Transform)")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_lines, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 4)
+    plt.title("Circle Detection (Hough Transform)")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(img_circles, cv2.COLOR_BGR2RGB))
+
+    plt.subplot(2, 3, 5)
+    plt.title("Region-based Segmentation (Watershed)")
+    plt.axis('off')
+    plt.imshow(cv2.cvtColor(watershed_img, cv2.COLOR_BGR2RGB))
+
+    plt.tight_layout()
+    plt.show()
+
+# Path to the image
+image_path = 'D:\\MSc\\Sem 1\\NoSql\\flower.jpg'  # Replace with the path to your image
+shape_segmentation(image_path)
