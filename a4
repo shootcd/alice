@@ -1,3 +1,7 @@
+##1.Log and Power-law transformations 
+###2. Contrast adjustments 
+###3. Histogram equalization 
+###4. Thresholding, and halftoning operations 
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
