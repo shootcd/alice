@@ -1,3 +1,6 @@
+###1.Create a triangle signal and plot a 3-period segment. 
+###2.For a given signal, plot the segment and compute the correlation between 
+###them. 
 !pip install scipy
 
 import numpy as np
