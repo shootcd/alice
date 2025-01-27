@@ -1,3 +1,4 @@
+##1. Upsampling and downsampling on Image/speech signal 
 import os 
 os.sys.path 
 
@@ -37,7 +38,7 @@ plt.tight_layout()
 plt.show()
 
 
-###Fast fourier
+###2.Fast fourier Transform
 import numpy as np
 
 fft_image = np.fft.fft2(image)
