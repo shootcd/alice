@@ -1,4 +1,4 @@
-##1. Upsampling and downsampling on Image/speech signal 
+###1. Upsampling and downsampling on Image/speech signal 
 import os 
 os.sys.path 
 
