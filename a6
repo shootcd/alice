@@ -1,3 +1,4 @@
+## implement linear and nonlinear noise smoothing on suitable image or sound signal.
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
