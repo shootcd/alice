@@ -1,4 +1,4 @@
-###Prac 8
+###Prac 8 edge detection techniques such as Sobel and Canny to extract meaningful information f
 import cv2
 import matplotlib.pyplot as plt
 
