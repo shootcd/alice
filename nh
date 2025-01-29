@@ -1,0 +1,40 @@
+in terminal
+1.	Install OpenJDK 11: sudo apt install openjdk-11-jdk 
+2.	Verify the Installation:  java -version 
+3.	Set JAVA_HOME Environment Variable: 
+•	Open the environment file: sudo vi /etc/environment  
+4.	Add the following line to set the JAVA_HOME variable:  
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 
+Save and exit the file. 
+ 
+To Apply Changes run the command: source /etc/environment 
+To check if path is correctly set or not run the command : echo $JAVA_HOME 
+
+
+in browser
+1.	Go to the Apache HBase download page. 
+2.	Navigate to the 2.6.0/ directory  
+3.	download hbase-2.6.0-bin.tar.gz. 
+
+
+in terminal
+4.	Move to Downloads Folder: cd Downloads/ 
+5.	To extract the hbase enter following command : tar xzvf hbase-2.6.0-bin.tar.gz 
+Configure HBase 
+1.	Navigate to HBase Directory: cd hbase-2.6.0 
+2.	Now Open the configuration file using following command: vi conf/hbase-env.sh 
+Find the line that sets JAVA_HOME, uncomment it, and set the path: 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 
+3.	To Apply Changes run the following command : source /etc/environment 
+To Launch HBase Shell run the following command: ./bin/hbase shell 
+
+
+
+create table
+>create 'students', 'info', 'grades'
+>put 'students', 'student1', 'info:name', 'alice'
+>put 'students', 'student1', 'grades: math', 'A'
+>scan 'students'
+>get 'students' 'student1'
+>delete 'students','student1','grades:math'
+deleteall 'students' 'student2'
