@@ -46,3 +46,16 @@ drop keyspace cscorner;
 
 describe cscorner
 
+
+________________________________________________________________________________
+
+Couchdb
+download & install counch db
+in chrome
+http://127.0.0.1:5984/_utils/
+
+create database
+add document edit etc
+
+_____________________________________________________________________________________
+
