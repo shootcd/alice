@@ -5,6 +5,8 @@ install ubuntu.vdi using this link
 
 >https://bit.ly/3OQGmWv
 
+password is- khalsa@123 after turning on
+
 
 open virtual box
 click on new
