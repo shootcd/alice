@@ -63,3 +63,13 @@ ________________________________________________________________________________
 Redis
 Install link
 https://github.com/microsoftarchive/redis/releases
+
+
+__________________________________________________________________________________________
+
+ubuntu via wsl
+go to windows> turn windows features on/offf
+turn on for linux
+install ubuntu via store
+
+https://aka.ms/wsl2kernel
