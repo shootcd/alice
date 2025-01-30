@@ -59,3 +59,7 @@ add document edit etc
 
 _____________________________________________________________________________________
 
+
+Redis
+Install link
+https://github.com/microsoftarchive/redis/releases
