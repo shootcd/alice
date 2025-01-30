@@ -12,7 +12,7 @@ To check if path is correctly set or not run the command : echo $JAVA_HOME
 
 
 in browser
-1.	Go to the Apache HBase download page. 
+1.	Go to the Apache HBase download page. https://dlcdn.apache.org/hbase/
 2.	Navigate to the 2.6.0/ directory  
 3.	download hbase-2.6.0-bin.tar.gz. 
 
